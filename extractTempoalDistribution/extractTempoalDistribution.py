@@ -95,7 +95,7 @@ def plot_cloudcover(dates, cloudcovers, plotfile):
     dates = [pd.to_datetime(d, format='%Y%m%d', errors='ignore') for d in dates]
 
     plt.ylim((-1, 100))  # set limit of y axis
-    plt.bar(dates, cloudcovers, color='orange', width=2.5, alpha=0.6)   # plot bar chart
+    plt.bar(dates, cloudcovers, color='orange', alpha=0.6)   # plot bar chart
     plt.scatter(dates, cloudcovers, c='blue', alpha=1)    # plot scatter
 
     # Customize ticks
