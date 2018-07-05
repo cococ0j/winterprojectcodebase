@@ -7,12 +7,8 @@ This script is to execute sen2cor processing.
 
 
 import os
-import sys
 import re
-from lxml import etree
-import xml.etree.cElementTree as ET
-import getopt
-import numpy as np
+import lxml.etree as ET
 import pandas as pd
 
 # not offer -h --help option as it is useless in whole process chain.
@@ -39,6 +35,8 @@ def modify_ozone(xmlfile,ozone):
 
 def sen2cor_process(sen2cor_xml_path, l1c_product_path):
 
+    print 'hello this is sen2cor'
+
     # path of L2A_GIPP.xml
     l2a_gipp = sen2cor_xml_path
 
@@ -47,6 +45,7 @@ def sen2cor_process(sen2cor_xml_path, l1c_product_path):
 
     # Get current input directory of L1C product.
     folder_path = l1c_product_path
+    print folder_path
     # Get a list of L1C files
     sub_folder_list = os.listdir(folder_path)
 
@@ -58,27 +57,32 @@ def sen2cor_process(sen2cor_xml_path, l1c_product_path):
 
             # Recognise Date
             date = re.findall(r'\d{8}', sub_folder)[0]
-            month = int(date[4, 6])
+            month = int(date[4:6])
             day = int(date[6:])
             ozone = ozone_LUT.loc[(ozone_LUT.month == month) & (ozone_LUT.day == day), 'roundOzone']
-
+            print ozone
+            break
             # Alter the L2A_GIPP.xml
             alter = modify_ozone(l2a_gipp, ozone)
-
+            print alter
             # if Ozone_content is modified
             if alter:
-                sen2cor_command = "python L2A_Process %s --resolution=10  --refresh --GIP_L2A %s" %(tile_folder,sen2cor_xml_path)
+                sen2cor_command = "L2A_Process %s --resolution=10  --refresh --GIP_L2A %s" %(tile_folder,sen2cor_xml_path)
 
             # if Ozone_content keeps the same as last file.
             else:
-                sen2cor_command = "python L2A_Process %s --resolution=10 --GIP_L2A %s" %(tile_folder,sen2cor_xml_path)
-
+                sen2cor_command = "L2A_Process %s --resolution=10 --GIP_L2A %s" %(tile_folder,sen2cor_xml_path)
+            print sen2cor_command
             os.system(sen2cor_command)
+            print '############################################################'
 
-
+    """
     print '############################################################'
     print 'L1C to L2A processing done.'
     print '############################################################'
+    """
 
-
-
+if __name__ == "__main__":
+    sen2cor_xml_path = '/Users/jibusi/Downloads/winterproject/data/Test/AUX_20180705T152742/L2A_GIPP.xml'
+    l1c_product_path = '/Users/jibusi/Downloads/winterproject/data/Test/L1C_20180705T152742'
+    sen2cor_process(sen2cor_xml_path, l1c_product_path)

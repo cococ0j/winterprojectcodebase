@@ -80,10 +80,15 @@ def parse_catalog(search_json_file):
                     storage_dict[prod]=storage
             except:
                 pass
+
     else:
-        print ">>> no product corresponds to selection criteria"
-        sys.exit(-1)
-    return(prod,download_dict,storage_dict)
+        # >>> no product corresponds to selection criteria"
+        prod = None
+        download_dict = None
+        storage_dict = None
+    return (prod, download_dict, storage_dict)
+
+
 ########################################################################### MAIN
 
 #==================
@@ -271,8 +276,11 @@ prod,download_dict,storage_dict=parse_catalog(options.search_json_file)
 #====================
 
 
-if len(download_dict)==0:
-    print "No product matches the criteria"
+if download_dict is None:
+    print '###########################################################'
+    print "No product matches the criteria: %s %s %s %s %s" %(options.tileid, start_date,end_date,lower_limit,upper_limit)
+    print '###########################################################'
+
 else:
     # first try for the products on tape
     if options.write_dir==None :
@@ -295,7 +303,7 @@ else:
 
     # Add the maximum repeat-times constraint.
     repeat_times = 0
-    while (NbProdsToDownload >0) and repeat_times <= 2:
+    while (NbProdsToDownload >0) and repeat_times <= 1:
        # redo catalog search to update disk/tape status
         if (options.product_type=="") and (options.sensor_mode=="") :
             search_catalog='curl -k -o %s https://peps.cnes.fr/resto/api/collections/%s/search.json?%s\&startDate=%s\&completionDate=%s\&maxRecords=500\&cloudCover=\\\[%d,%d\\\]'%(options.search_json_file,options.collection,query_geom,start_date,end_date,lower_limit,upper_limit)
@@ -333,6 +341,8 @@ else:
             file_exists= os.path.exists(("%s/%s.SAFE")%(options.write_dir,prod)) or  os.path.exists(("%s/%s.zip")%(options.write_dir,prod))
             if (not(options.no_download) and not(file_exists)):
                 if storage_dict[prod]=="tape":
+
+
                     tmticks=time.time()
                     tmpfile=("%s/tmp_%s.tmp")%(options.write_dir,tmticks)
                     print "\nDownload of product : %s"%prod
@@ -346,16 +356,17 @@ else:
 
 
         if NbProdsToDownload>0:
-            print "##############################################################################"
-            print "%d remaining products are on tape, lets's wait 2 minutes before trying again"% NbProdsToDownload
-            print "##############################################################################"
+            #print "##############################################################################"
+            #print "%d remaining products are on tape, lets's wait 2 minutes before trying again"% NbProdsToDownload
+            #print "##############################################################################"
             repeat_times += 1
-            time.sleep(120)
+            time.sleep(1)
 
-    if repeat_times > 2:
+
+
+    if repeat_times > 1:
         print 'Data on TAPE cannot be download'
 
     else:
         print 'Done.'
-
 

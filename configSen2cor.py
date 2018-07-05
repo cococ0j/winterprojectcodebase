@@ -6,12 +6,15 @@ This script is to modify the configuration file (L2A_GIPP.xml) of sen2Cor.
 """
 
 
-import xml.etree.cElementTree as ET
+import lxml.etree as ET
 
 
 def config_sen2cor(sen2cor_xml_path,l2a_dir):
 
     # Please modify available parameters below
+
+    # 0 Nr_Processes
+    nr_processes = '1'
 
     # 1 Target_Directory
     # -- No need to modify here --
@@ -25,7 +28,7 @@ def config_sen2cor(sen2cor_xml_path,l2a_dir):
     # -- SUMMER, WINTER, AUTO --'
     mid_latitude = 'SUMMER'
 
-    # 4 Ozone_Content (Better to leave it as default.)
+    # 4 Ozone_Content (Better to leave it as default. It will be modified automatically later.)
     """
     The atmospheric temperature profile and ozone content in Dobson Unit (DU)
     0: to get the best approximation from metadata
@@ -73,13 +76,17 @@ def config_sen2cor(sen2cor_xml_path,l2a_dir):
     root = tree.getroot()
 
     for elem in root.iter():
+
+        if elem.tag == 'Nr_Processes':
+            elem.text = nr_processes
+
         if elem.tag == 'Target_Directory':
             elem.text = target_directory
 
         if elem.tag == 'Aerosol_Type':
             elem.text = aerosol_type
 
-        if elem.tag == 'mid_Latitude':
+        if elem.tag == 'Mid_Latitude':
             elem.text = mid_latitude
 
         if elem.tag == 'Ozone_Content':
@@ -91,7 +98,7 @@ def config_sen2cor(sen2cor_xml_path,l2a_dir):
         if elem.tag == 'VIS_Update_Mode':
             elem.text = vis_update_mode
 
-        if elem.tag =='WV_Watermask':
+        if elem.tag == 'WV_Watermask':
             elem.text = wv_watermask
 
         if elem.tag == 'Cirrus_Correction':
@@ -100,7 +107,7 @@ def config_sen2cor(sen2cor_xml_path,l2a_dir):
         if elem.tag == 'BRDF_Correction':
             elem.text = brdf_correction
 
-        if elem.tag == 'BRDF_Lower_bound':
+        if elem.tag == 'BRDF_Lower_Bound':
             elem.text = brdf_lower_bound
 
     tree.write(sen2cor_xml_path)
@@ -110,7 +117,8 @@ def config_sen2cor(sen2cor_xml_path,l2a_dir):
 
 if __name__ == "__main__":
     sen2cor_xml_path = '/Users/jibusi/Downloads/winterproject/code/L2A_GIPP.xml'
-    config_sen2cor(sen2cor_xml_path)
+    l2a_dir = 'test'
+    config_sen2cor(sen2cor_xml_path,l2a_dir)
 
 
 
