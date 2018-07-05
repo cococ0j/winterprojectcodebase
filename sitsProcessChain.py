@@ -227,6 +227,7 @@ print "############### Unzip finished ################ "
 if l2a_processor == 'sen2cor':
     print "************* Sen2Cor Atomspheric Correction *************"
     sen2cor_process(sen2cor_xml_path, l1c_dir)
+    print "************ Atomspheric Correction Finished *************"
 
 
 
