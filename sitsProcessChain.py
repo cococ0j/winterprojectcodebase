@@ -214,22 +214,42 @@ for tile in tile_list:
                                                                                                         lower_limit,upper_limit,l1c_dir)
     os.system(peps_command)
 
+# Delete tmp files
+delete_tmp = 'find %s -type f -name "*tmp" -delete'%(l1c_dir)
+os.system(delete_tmp)
+
 # Unzip SAVE folders
+# if no files for this tile, exit with error.
+if len(os.listdir(l1c_dir)) == 0:
+    print "Error: There is no data for these tiles."
+    sys.exit(-2)
+
+
 print "############### Unzip SAFE folders ################ "
 unzip_command = 'cd %s && unzip \'*.zip\''%(l1c_dir)
 os.system(unzip_command)
 print "############### Unzip finished ################ "
+
+
+# Delete zip files
+# delete_zip_tmp = 'find %s -type f \( -name "*.zip" -o -name "*tmp" \) -delete'%(l1c_dir)
+delete_zip = 'find %s -type f -name "*.zip" -delete'%(l1c_dir)
+os.system(delete_zip)
 
 # Sen2cor process
 # check whether the folder exist
 # Update log file
 
 if l2a_processor == 'sen2cor':
-    print "************* Sen2Cor Atomspheric Correction *************"
+    print "************* Sen2Cor Atmospheric Correction *************"
     sen2cor_process(sen2cor_xml_path, l1c_dir)
-    print "************ Atomspheric Correction Finished *************"
+    print "************ Atmospheric Correction Finished *************"
 
 
+# Delete L1C files
+if not save_l1c:
+    delete_l1c = 'find %s -type d -name "*.SAFE" -exec rm -r {} +'%(l1c_dir)
+    os.system(delete_l1c)
 
 # MAJA process
 # Update log file
