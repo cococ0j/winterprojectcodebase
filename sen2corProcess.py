@@ -33,7 +33,7 @@ def modify_ozone(xmlfile,ozone):
     return alter
 
 
-def sen2cor_process(sen2cor_xml_path, l1c_product_path):
+def sen2cor_process(sen2cor_xml_path, l1c_product_path, log_file):
 
     # path of L2A_GIPP.xml
     l2a_gipp = sen2cor_xml_path
@@ -62,11 +62,11 @@ def sen2cor_process(sen2cor_xml_path, l1c_product_path):
             alter = modify_ozone(l2a_gipp, ozone)
             # if Ozone_content is modified
             if alter:
-                sen2cor_command = "L2A_Process %s --resolution=10  --refresh --GIP_L2A %s" %(tile_folder,sen2cor_xml_path)
+                sen2cor_command = "L2A_Process %s --resolution=10  --refresh --GIP_L2A %s >> %s" %(tile_folder,sen2cor_xml_path, log_file)
 
             # if Ozone_content keeps the same as last file.
             else:
-                sen2cor_command = "L2A_Process %s --resolution=10 --GIP_L2A %s" %(tile_folder,sen2cor_xml_path)
+                sen2cor_command = "L2A_Process %s --resolution=10 --GIP_L2A %s >> %s" %(tile_folder,sen2cor_xml_path, log_file)
             os.system(sen2cor_command)
             print '############################################################'
 
@@ -79,4 +79,5 @@ def sen2cor_process(sen2cor_xml_path, l1c_product_path):
 if __name__ == "__main__":
     sen2cor_xml_path = '/Users/jibusi/Downloads/winterproject/data/Test/AUX_20180705T152742/L2A_GIPP.xml'
     l1c_product_path = '/Users/jibusi/Downloads/winterproject/data/Test/L1C_20180705T152742'
+    log_file = '/Users/jibusi/Downloads/winterproject/data/Test/AUX_20180705T152742/sample.log'
     sen2cor_process(sen2cor_xml_path, l1c_product_path)

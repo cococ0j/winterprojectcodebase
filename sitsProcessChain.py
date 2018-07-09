@@ -16,6 +16,7 @@ import sys
 import datetime
 from configSen2cor import *
 from sen2corProcess import *
+import logging
 
 
 
@@ -109,6 +110,8 @@ else :
 
     (options, args) = parser.parse_args()
 
+
+
 if options.tile_list is None or options.start_date is None or options.end_date is None or options.write_dir is None:
     print 'Please make enter all necessary parameters, including tile_list,  start_date, end_date and write_dir'
     sys.exit(-1)
@@ -180,6 +183,17 @@ os.system('cp L2A_GIPP.xml %s'%(aux_dir))
 sen2cor_xml_path = aux_dir + '/' + 'L2A_GIPP.xml'
 
 
+# Create log
+log_file = aux_dir + '/' + execute_time + '.log'
+logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+logging.INFO('Tile list: %s' % (str(tile_list)))
+logging.INFO('Start date: %s' % (start_date))
+logging.INFO('End date: %s' % end_date)
+logging.INFO('L2A Processor: %s' % l2a_processor)
+logging.INFO("Cloud covering: [%s, %s]" % (lower_limit, upper_limit))
+logging.INFO('Save L1C: %s' % options.save_l1c)
+logging.INFO('Save L2A: %s' % options.save_l2a)
+
 
 # configure sen2cor
 if l2a_processor == 'sen2cor':
@@ -207,11 +221,12 @@ print_config(maja_config_path)
 
 # Download process
 # Update log file
+logging.INFO("The following are peps download records. ")
 cur_work_dir = os.getcwd()
 peps_dir = cur_work_dir + '/' + 'pepsDownload.py'
 for tile in tile_list:
-    peps_command = 'python %s -t %s -a peps.txt -d %s -f %s -c S2ST --ll %d --ul %d -w %s' %(peps_dir, tile,start_date,end_date,
-                                                                                                        lower_limit,upper_limit,l1c_dir)
+    peps_command = 'python %s -t %s -a peps.txt -d %s -f %s -c S2ST --ll %d --ul %d -w %s >> %s' %(peps_dir, tile,start_date,end_date,
+                                                                                                        lower_limit,upper_limit,l1c_dir, log_file)
     os.system(peps_command)
 
 # Delete tmp files
@@ -221,12 +236,13 @@ os.system(delete_tmp)
 # Unzip SAVE folders
 # if no files for this tile, exit with error.
 if len(os.listdir(l1c_dir)) == 0:
+    logging.ERROR("Error: There is no data for these tiles.")
     print "Error: There is no data for these tiles."
     sys.exit(-2)
 
-
+logging.INFO('The following is unzipping tile data.')
 print "############### Unzip SAFE folders ################ "
-unzip_command = 'cd %s && unzip \'*.zip\''%(l1c_dir)
+unzip_command = 'cd %s && unzip \'*.zip\' >> %s'%(l1c_dir, log_file)
 os.system(unzip_command)
 print "############### Unzip finished ################ "
 
@@ -241,8 +257,9 @@ os.system(delete_zip)
 # Update log file
 
 if l2a_processor == 'sen2cor':
+    logging.INFO('The following is the log of Sen2Cor Atmospheric Correction')
     print "************* Sen2Cor Atmospheric Correction *************"
-    sen2cor_process(sen2cor_xml_path, l1c_dir)
+    sen2cor_process(sen2cor_xml_path, l1c_dir, log_file)
     print "************ Atmospheric Correction Finished *************"
 
 
