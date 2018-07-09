@@ -80,4 +80,4 @@ if __name__ == "__main__":
     sen2cor_xml_path = '/Users/jibusi/Downloads/winterproject/data/Test/AUX_20180705T152742/L2A_GIPP.xml'
     l1c_product_path = '/Users/jibusi/Downloads/winterproject/data/Test/L1C_20180705T152742'
     log_file = '/Users/jibusi/Downloads/winterproject/data/Test/AUX_20180705T152742/sample.log'
-    sen2cor_process(sen2cor_xml_path, l1c_product_path)
+    sen2cor_process(sen2cor_xml_path, l1c_product_path, log_file)
