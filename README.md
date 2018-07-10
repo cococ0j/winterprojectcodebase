@@ -30,10 +30,10 @@ Make sure you have intall all of them before running this script.
 
 
 ## 2. Modules
-### 2.1 sitsProcessChain.py
+### 2.1 sits_process_chain.py
      It may be the only pyhon script you would like to execute. It reorganize and consolidate all three steps of the satellite data processing. Details are as follows:   
-| Parameters |option| description | 
-| ------------ | ---------- | ------- |  
+| Parameters |option| description |
+| ------------ | ---------- | ------- |
 | list of tiles | -t| mandatory |
 | start date|-d| mandatory (at this time, it should be after 2016-12-15, otherwise we should add more parameter because of peps)|
 |end date|-f| mandatory|
@@ -43,15 +43,15 @@ Make sure you have intall all of them before running this script.
 |gap dir |-g| directory to store gap-filling data, will be under main path, default GAP with timestamp|
 |save l1c |--s1| bolean value to choose save l1c data or not after processing, default TRUE|
 |save l2a |--s2| boolean value to choose save l2c data or not after processing, default TRUE|
-|l2a processor |-lp| either sen2cor or maja, default sen2cor|
+|l2a processor |--lp| either sen2cor or maja, default sen2cor|
 | cloud covering lower boundary|--ll| |
 |cloud covering upper boundary|--ul| |
 
-### 2.2 pepsDownload.py
+### 2.2 peps_download.py
 Original from [Oliveri's github]( 'https://github.com/olivierhagolle/peps_download). Here, we made some modification so that it can receive cloud covering options from user, and not waste time for downloading data on TAPE, because it is currently unavailable from CENS source. 
-### 2.3 configSen2cor.py
+### 2.3 config_sen2cor.py
 This python script is to configure Sen2Cor. You can open and edit it to set parameters. Remeber to save it before you leave.
-### 2.4 sen2corProcess.py
+### 2.4 sen2cor_process.py
 This python script is the main file for sen2cor processing. It includes a lookup table for setting Ozone for each satellite file.
 ## 3. Auxiliary files
 | File name | Use |
@@ -61,18 +61,18 @@ This python script is the main file for sen2cor processing. It includes a lookup
 | peps.txt | Peps username and password |
 
 ## 4. Workflow
-1. Modify configSen2cor.py to set parameters for Sen2Cor
-2. Run sitsProcessChain.py with requied parameters
+1. Modify config_sen2cor.py to set parameters for Sen2Cor
+2. Run sits_process_chain.py with requied parameters
 
 
 ## 5. Examples
 ### For Sentinel-2
 ```python 
 # Porcess two tiles (54HYE,54HBV) with default saving path
-python sitsProcessChain.py -t [54HYE,54HBV] -d 2018-04-14 -f 2018-04-26 -w /Users/jibusi/Downloads/winterproject/data/Test
+python sits_process_chain.py -t [54HYE,54HBV] -d 2018-04-14 -f 2018-04-26 -w /Users/jibusi/Downloads/winterproject/data/Test
 
 # Porcess two tiles (54HYE,54HBV) with user-defined saving path and L2A processors
-python sitsProcessChain.py -t [54HYE,54HBV] -d 2018-04-14 -f 2018-04-26 -w /Users/jibusi/Downloads/winterproject/data/Test -c l1c_test -a l2a_test -g gap_test --lp sen2cor
+python sits_process_chain.py -t [54HYE,54HBV] -d 2018-04-14 -f 2018-04-26 -w /Users/jibusi/Downloads/winterproject/data/Test -c l1c_test -a l2a_test -g gap_test --lp sen2cor
 ```
 
 

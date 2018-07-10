@@ -62,11 +62,11 @@ def sen2cor_process(sen2cor_xml_path, l1c_product_path, log_file):
             alter = modify_ozone(l2a_gipp, ozone)
             # if Ozone_content is modified
             if alter:
-                sen2cor_command = "L2A_Process %s --resolution=10  --refresh --GIP_L2A %s >> %s" %(tile_folder,sen2cor_xml_path, log_file)
+                sen2cor_command = "L2A_Process %s --resolution=10  --refresh --GIP_L2A %s 2>&1 | tee -a %s" %(tile_folder,sen2cor_xml_path, log_file)
 
             # if Ozone_content keeps the same as last file.
             else:
-                sen2cor_command = "L2A_Process %s --resolution=10 --GIP_L2A %s >> %s" %(tile_folder,sen2cor_xml_path, log_file)
+                sen2cor_command = "L2A_Process %s --resolution=10 --GIP_L2A %s 2>&1 | tee -a %s" %(tile_folder,sen2cor_xml_path, log_file)
             os.system(sen2cor_command)
             print '############################################################'
 
