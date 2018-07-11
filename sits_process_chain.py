@@ -117,7 +117,7 @@ if options.tile_list is None or options.start_date is None or options.end_date i
     sys.exit(-1)
 
 # list all parameters
-tile_list = options.tile_list.lstrip('[').rstrip(']').split(',')
+tile_list = [i.strip() for i in options.tile_list.lstrip('[').rstrip(']').split(',')]
 start_date = options.start_date
 end_date = options.end_date
 l2a_processor = options.l2a_processor
