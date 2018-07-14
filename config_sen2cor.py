@@ -9,7 +9,7 @@ This script is to modify the configuration file (L2A_GIPP.xml) of sen2Cor.
 import lxml.etree as ET
 
 
-def config_sen2cor(sen2cor_xml_path,l2a_dir):
+def config_sen2cor(sen2cor_xml_path):
 
     # Please modify available parameters below
 
@@ -18,7 +18,7 @@ def config_sen2cor(sen2cor_xml_path,l2a_dir):
 
     # 1 Target_Directory
     # -- No need to modify here --
-    target_directory = l2a_dir
+    #target_directory = l2a_dir
 
     # 2 Aerosol_Type
     # -- RURAL, MARITIME, AUTO --
@@ -28,7 +28,7 @@ def config_sen2cor(sen2cor_xml_path,l2a_dir):
     # -- SUMMER, WINTER, AUTO --'
     mid_latitude = 'SUMMER'
 
-    # 4 Ozone_Content (Better to leave it as default. It will be modified automatically later.)
+    # 4 Ozone_Content (if it is set to -1, it will be modified automatically by ozone information collected from data.)
     """
     The atmospheric temperature profile and ozone content in Dobson Unit (DU)
     0: to get the best approximation from metadata
@@ -42,7 +42,7 @@ def config_sen2cor(sen2cor_xml_path,l2a_dir):
     250, 290, 330, 377 (standard MW), 420, 460
     ==========================================
     """
-    ozone_content = '331'
+    ozone_content = '-1'
 
     # 5 WV_Correction
     # -- 0: No WV correction, 1: only 940 nm bands, 2: only 1130 nm bands , 3: both regions used during wv retrieval, 4: Thermal region --
@@ -80,8 +80,8 @@ def config_sen2cor(sen2cor_xml_path,l2a_dir):
         if elem.tag == 'Nr_Processes':
             elem.text = nr_processes
 
-        if elem.tag == 'Target_Directory':
-            elem.text = target_directory
+        #if elem.tag == 'Target_Directory':
+        #   elem.text = target_directory
 
         if elem.tag == 'Aerosol_Type':
             elem.text = aerosol_type
@@ -114,12 +114,12 @@ def config_sen2cor(sen2cor_xml_path,l2a_dir):
 
     print 'Load Sen2cor configuration successfully'
 
-
+"""
 if __name__ == "__main__":
     sen2cor_xml_path = '/Users/jibusi/Downloads/winterproject/code/L2A_GIPP.xml'
     l2a_dir = 'test'
     config_sen2cor(sen2cor_xml_path,l2a_dir)
-
+"""
 
 
 

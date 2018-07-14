@@ -356,11 +356,11 @@ else:
 
 
         if NbProdsToDownload>0:
-            #print "##############################################################################"
-            #print "%d remaining products are on tape, lets's wait 2 minutes before trying again"% NbProdsToDownload
-            #print "##############################################################################"
+            print "##############################################################################"
+            print "%d remaining products are on tape, lets's wait 2 minutes before trying again"% NbProdsToDownload
+            print "##############################################################################"
             repeat_times += 1
-            time.sleep(1)
+            time.sleep(120)
 
 
 
