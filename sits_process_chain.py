@@ -316,7 +316,7 @@ else:
 
     for l1c_dir_tile in l1c_dir_tiles_list:
         l1c_dir_tile_dir = l1c_dir + '/' + l1c_dir_tile
-        l1c_data_existing['l1c_dir_tile'] = os.listdir(l1c_dir_tile_dir) # for linux
+        l1c_data_existing[l1c_dir_tile] = os.listdir(l1c_dir_tile_dir) # for linux
         # l1c_data_existing[l1c_dir_tile] = [i for i in os.listdir(l1c_dir_tile_dir) if i != '.DS_Store']  # for macOS
 
     # Check whether L2A the folder exist
@@ -369,7 +369,7 @@ else:
         l2a_data_existing = {}
         for l2a_dir_tile in l2a_dir_tiles_list:
             l2a_dir_tile_dir = l2a_dir + '/' + l2a_dir_tile
-            l2a_data_existing['l2a_dir_tile'] = os.listdir(l2a_dir_tile_dir)  # For linux
+            l2a_data_existing[l2a_dir_tile] = os.listdir(l2a_dir_tile_dir)  # For linux
             # l2a_data_existing[l2a_dir_tile] = [i for i in os.listdir(l2a_dir_tile_dir) if i != '.DS_Store']  # For macOS
 
         # Compare l1c_data_existing and l2a_data_existing to find out how many l1c data to process. And also record to log file and display
