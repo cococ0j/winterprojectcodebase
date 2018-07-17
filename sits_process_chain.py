@@ -59,6 +59,18 @@ def print_config(sen2cor_xml_path=None, maja_xml_path=None):
                 print elem.tag + ' ' + ':' + ' ' + elem.text
 
 
+def select_file_in_given_interval(a_file, start_date, end_date):
+    file_date_int = int(re.findall(r'\d{8}', a_file)[0])
+    start_date_int = int(start_date[:4]+start_date[5:7]+start_date[8:])
+    end_date_int = int(end_date[:4]+end_date[5:7]+end_date[8:])
+
+    if file_date_int >= start_date_int and file_date_int <= end_date_int:
+        return True
+    else:
+        return False
+
+
+
 def compare_dict(d1,d2):
     d3 = {}
     existed = []
@@ -315,9 +327,11 @@ else:
     l1c_data_existing = {}
 
     for l1c_dir_tile in l1c_dir_tiles_list:
-        l1c_dir_tile_dir = l1c_dir + '/' + l1c_dir_tile
-        l1c_data_existing[l1c_dir_tile] = os.listdir(l1c_dir_tile_dir) # for linux
-        # l1c_data_existing[l1c_dir_tile] = [i for i in os.listdir(l1c_dir_tile_dir) if i != '.DS_Store']  # for macOS
+        if l1c_dir_tile[1:] in tile_list:
+            l1c_dir_tile_dir = l1c_dir + '/' + l1c_dir_tile
+            # if len(os.listdir(l1c_dir_tile_dir)) != 0:
+            l1c_data_existing[l1c_dir_tile] = [f for f in os.listdir(l1c_dir_tile_dir) if select_file_in_given_interval(f, start_date, end_date)]  # for linux
+            # l1c_data_existing[l1c_dir_tile] = [f for f in os.listdir(l1c_dir_tile_dir) if f != '.DS_Store' and select_file_in_given_interval(f, start_date, end_date)]  # for macOS
 
     # Check whether L2A the folder exist
     if not os.path.exists(l2a_dir):
@@ -343,7 +357,6 @@ else:
             logging.info('The following is the log of Sen2Cor Atmospheric Correction')
             print "************* Sen2Cor Atmospheric Correction *************"
 
-
             for l1c_dir_tile, l1c_dir_tiles_list in l1c_data_waiting_process.iteritems():
                 l1c_dir_tile_dir = l1c_dir + '/' + l1c_dir_tile
                 l2a_dir_tile_dir = l2a_dir + '/' + l1c_dir_tile
@@ -368,11 +381,14 @@ else:
         # l2a_dir_tiles_list = [i for i in os.listdir(l2a_dir) if i != '.DS_Store'] # for macOS
         l2a_data_existing = {}
         for l2a_dir_tile in l2a_dir_tiles_list:
-            l2a_dir_tile_dir = l2a_dir + '/' + l2a_dir_tile
-            l2a_data_existing[l2a_dir_tile] = os.listdir(l2a_dir_tile_dir)  # For linux
-            # l2a_data_existing[l2a_dir_tile] = [i for i in os.listdir(l2a_dir_tile_dir) if i != '.DS_Store']  # For macOS
+            if l2a_dir_tile[1:] in tile_list:
+                l2a_dir_tile_dir = l2a_dir + '/' + l2a_dir_tile
+                # if len(os.listdir(l2a_dir_tile_dir)) != 0:
+                l2a_data_existing[l2a_dir_tile] = [f for f in os.listdir(l2a_dir_tile_dir) if select_file_in_given_interval(f,start_date, end_date)]  # For linux
+                # l2a_data_existing[l2a_dir_tile] = [f for f in os.listdir(l2a_dir_tile_dir) if f != '.DS_Store' and select_file_in_given_interval(f,start_date, end_date) ]  # For macOS
 
-        # Compare l1c_data_existing and l2a_data_existing to find out how many l1c data to process. And also record to log file and display
+        # Compare l1c_data_existing and l2a_data_existing to find out how many l1c data to process.
+        # And also record to log file and display
         l1c_data_waiting_process = compare_dict(l1c_data_existing, l2a_data_existing)
 
 
@@ -411,7 +427,7 @@ else:
 
 # Delete L1C files
 if not save_l1c:
-    #delete_l1c = 'find %s -type d -name "*.SAFE" -exec rm -r {} +'%(l1c_dir)
+    # delete_l1c = 'find %s -type d -name "*.SAFE" -exec rm -r {} +'%(l1c_dir)
     delete_l1c = 'rm -r %s' %(l1c_dir)
     os.system(delete_l1c)
 
