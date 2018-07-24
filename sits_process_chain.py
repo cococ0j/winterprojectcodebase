@@ -14,12 +14,13 @@ import lxml.etree as ET
 import optparse
 import sys
 import datetime
-
+import logging
 
 
 from config_sen2cor import *
 from sen2cor_process import *
-import logging
+from config_iota2 import *
+
 
 
 
@@ -434,7 +435,18 @@ if not save_l1c:
 
 # IOTA2 process
 # Update log file
-# if last_step:
-#    pass
-#if not os.path.exists(gap_dir):
-#    os.system('mkdir %s'%(gap_dir))
+if last_step:
+    if not os.path.exists(gap_dir):
+        os.system('mkdir %s'%(gap_dir))
+    ref_path = write_dir + 'ref'
+
+    # replicate and rename Iota2 configuration file.
+    os.system('cp IOTA2_Example.cfg %s' %(ref_path))
+    temp = ref_path + '/' + 'IOTA2_Example.cfg'
+    new_name = 'IOTA2_Example.cfg' + execute_time
+    iota2_config_path = ref_path + '/' + new_name
+    os.system('mv %s %s' % (temp, iota2_config_path))
+
+    # Configure iota2
+    config_iota2(iota2_config_path, tile_list, start_date, end_date)
+
